@@ -1,0 +1,20 @@
+var that = this
+var storageRef = storage.ref()
+if (this.src != null) {
+storageRef.child('images/' + this.filename)
+    .putString(this.src.split(',')[1], 'base64')
+    .then(function (snapshot) {
+    storageRef.child('images/' + that.filename).getDownloadURL().then(function (url) {
+        that.ApplyAdd(that, url)
+    })
+    })
+}
+
+changeImage (event) {
+  var img = event.target.files[0]
+  this.filename = img.name
+  var reader = new FileReader()
+  reader.readAsDataURL(img)
+  reader.onloadend = () => {
+  this.src = reader.result
+}

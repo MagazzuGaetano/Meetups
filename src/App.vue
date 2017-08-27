@@ -2,7 +2,7 @@
   <div>
     <v-navigation-drawer temporary v-model="sideNav" style="background-color:white">
     <v-list>
-      <v-list-tile v-for="item in menuItems" :key="item.title" router :to="item.link">
+      <v-list-tile v-for="item in menuItems" @click.native="onSignOut(item.title)" :key="item.title" router :to="item.link">
         <v-icon>{{ item.icon }}</v-icon>
         <v-list-tile-action>
           <v-list-tile-content style="margin:5px">{{ item.title }}</v-list-tile-content>
@@ -16,7 +16,8 @@
       <v-toolbar-title><router-link to="/" tag="span" style="cursor:pointer" class="white--text">Meetups</router-link></v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-xs-only">
-        <v-btn class="white--text" flat v-for="item in menuItems" :key="item.title" router :to="item.link">
+        <v-btn class="white--text" flat v-for="item in menuItems" @click.native="onSignOut(item.title)"
+         :key="item.title" router :to="item.link">
           <v-icon class="v-icon">{{ item.icon }}</v-icon>
           {{ item.title }}
         </v-btn>
@@ -38,15 +39,33 @@ export default {
   name: 'app',
   data () {
     return {
-      sideNav: false,
-      menuItems: [
-       { icon: 'person_pin', title: 'View Meetups', link: '/viewmeetups' },
-       { icon: 'room', title: 'Organize Meetup', link: '/organizemeetup' },
-       { icon: 'person', title: 'Profile', link: '/profile' },
-       { icon: 'exit_to_app', title: 'logout', link: '/' },
-       { icon: 'face', title: 'Sign up', link: '/signup' },
-       { icon: 'lock_open', title: 'Sign in', link: '/login' }
+      sideNav: false
+    }
+  },
+  computed: {
+    menuItems () {
+      let menuItems = [
+        { icon: 'face', title: 'Sign up', link: '/signup' },
+        { icon: 'lock_open', title: 'Sign in', link: '/signin' }
       ]
+      if (this.userIsAuthenticated) {
+        menuItems = [
+          { icon: 'person_pin', title: 'View Meetups', link: '/viewmeetups' },
+          { icon: 'room', title: 'Organize Meetup', link: '/organizemeetup' },
+          { icon: 'person', title: 'Profile', link: '/profile' },
+          { icon: 'exit_to_app', title: 'logout', link: '/' }
+        ]
+      }
+      return menuItems
+    },
+    userIsAuthenticated () {
+      return this.$store.getters.user !== null && this.$store.getters.user !== undefined
+    }
+  },
+  methods: {
+    onSignOut (title) {
+      if (title !== 'logout') return
+      return this.$store.dispatch('signUserOut', null)
     }
   }
 }

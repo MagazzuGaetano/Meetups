@@ -27,9 +27,9 @@
       <v-carousel style="cursor:pointer">
         <v-carousel-item
           v-for="item in items"
-          v-bind:src="item.src"
+          v-bind:src="item.imageUrl"
           :key="item.key"
-          @click.native="onLoadMeetup(item.key)">
+          @click.native="onLoadMeetup(item.id)">
           <div class="title">{{ item.title }}</div>
         </v-carousel-item>
       </v-carousel>
@@ -46,48 +46,25 @@
 </template>
 
 <script>
-
 export default {
-  name: 'index',
   data () {
     return {
-      items: [
-        {
-          src: '../static/NewYork.jpg',
-          key: '-KpZ7WGUaLqFGLdhBVfW',
-          title: 'New York Event !!!',
-          description: 'an awensome meetup in the most populous American\'s City New York'
-        },
-        {
-          src: '../static/Amsterdam.jpg',
-          key: '-KqEHfyRVYedyoWT5hCN',
-          title: 'Amsterdam Meetup!!!',
-          description: 'a tour through the neighbourgs of Amsterdam'
-        },
-        {
-          src: '../static/Londra.jpg',
-          key: '-KpZ5gc2gGsBoPVBGr_3',
-          title: 'London Meetup',
-          description: 'a beatiful meetup inside the streets of London City'
-        },
-        {
-          src: '../static/milan.jpg',
-          key: '-KpJoj8x7GpkgDuXaIjd',
-          title: 'Codeemotion 2017',
-          description: 'Codemotion is a platform devoted to developers that connect IT professionals, tech communities, and IT companies. As we\'re a hub of innovation, we share the latest tech information and best practices among the tech community worldwide'
-        }
-      ]
+      var: ''
+    }
+  },
+  computed: {
+    items () {
+      return this.$store.getters.featuredMeetups
     }
   },
   methods: {
-    onLoadMeetup (key) {
-      this.$router.push('/meetups/' + key)
+    onLoadMeetup (id) {
+      this.$router.push('/meetups/' + id)
     }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
 h1, h2 {
