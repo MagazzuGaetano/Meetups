@@ -1,4 +1,4 @@
-# movies
+# Meetups
 
 > A Vue.js project
 
