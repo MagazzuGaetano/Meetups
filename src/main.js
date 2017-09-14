@@ -8,6 +8,10 @@ import * as VueGoogleMaps from 'vue2-google-maps'
 import DateFilter from './filters/date'
 import { store } from './store'
 import * as firebase from 'firebase'
+import editMeetupDialog from './components/dialog/EditMeetupDialog.vue'
+import editDateDialog from './components/dialog/EditDateDialog.vue'
+import editTimeDialog from './components/dialog/EditTimeDialog.vue'
+import registerDialog from './components/dialog/RegisterDialog.vue'
 
 Vue.use(VueGoogleMaps, {
   load: {
@@ -17,6 +21,10 @@ Vue.use(VueGoogleMaps, {
 })
 
 Vue.filter('date', DateFilter)
+Vue.component('editMeetupDialog', editMeetupDialog)
+Vue.component('editDateDialog', editDateDialog)
+Vue.component('editTimeDialog', editTimeDialog)
+Vue.component('registerDialog', registerDialog)
 
 Vue.config.productionTip = false
 Vue.use(Vuetify)
@@ -40,6 +48,7 @@ new Vue({
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.$store.dispatch('autoSignIn', user)
+        this.$store.dispatch('fecthUserData')
       }
     })
     this.$store.dispatch('loadMeetups')

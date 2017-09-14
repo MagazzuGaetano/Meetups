@@ -10,17 +10,61 @@ export const store = new Vuex.Store({
     user: null
   },
   mutations: {
+    registerUserForMeetup (state, payload) {
+      const id = payload.id
+      if (state.user.registeredMeetups.findIndex(meetup => meetup.id === id) >= 0) return
+      state.user.registeredMeetups.push(id)
+      state.user.fbkeys[id] = payload.fbkey
+    },
+    unregisterUserFromMeetup (state, payload) {
+      const registeredMeetups = state.user.registeredMeetups
+      registeredMeetups.splice(registeredMeetups.findIndex(meetup => meetup.id === payload), 1)
+      Reflect.deleteProperty(state.user.fbkeys, payload)
+    },
     setLoadedMeetups (state, payload) {
       state.LoadedMeetups = payload
     },
     createMeetup (state, payload) {
       state.LoadedMeetups.push(payload)
     },
+    updateMeetup (state, payload) {
+      const meetup = state.LoadedMeetups.find(meetup => {
+        return meetup.id === payload.id
+      })
+      if (payload.title) meetup.title = payload.title
+      if (payload.description) meetup.description = payload.description
+      if (payload.date) meetup.date = payload.date
+      if (payload.place) meetup.place = payload.place
+    },
     setUser (state, payload) {
       state.user = payload
     }
   },
   actions: {
+    registerUserForMeetup ({commit, getters}, payload) {
+      const user = getters.user
+      firebase.database().ref('/users/' + user.id).child('/registrations/')
+        .push(payload)
+        .then(data => {
+          commit('registerUserForMeetup', {id: payload, fbkey: data.key})
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    unregisterUserFromMeetup ({commit, getters}, payload) {
+      const user = getters.user
+      if (!user.fbkeys) return
+      const fbkey = user.fbkeys[payload]
+      firebase.database().ref('/users/' + user.id + '/registrations/').child(fbkey)
+        .remove()
+        .then(() => {
+          commit('unregisterUserFromMeetup', payload)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
     loadMeetups ({commit}) {
       firebase.database().ref('meetups').once('value')
         .then((data) => {
@@ -47,21 +91,70 @@ export const store = new Vuex.Store({
       const meetup = {
         title: payload.title,
         place: payload.place,
-        imageUrl: payload.imageUrl,
         description: payload.description,
         date: payload.date.toISOString(),
         author: getters.user.id
       }
+      let imageUrl
+      let key
       firebase.database().ref('meetups').push(meetup)
         .then((data) => {
-          const key = data.key
+          key = data.key
+          return key
+        })
+        .then(key => {
+          const filename = payload.image.name
+          const ext = filename.slice(filename.lastIndexOf('.'))
+          return firebase.storage().ref('meetups/' + key + '.' + ext).put(payload.image)
+        })
+        .then(fileData => {
+          imageUrl = fileData.metadata.downloadURLs[0]
+          return firebase.database().ref('meetups').child(key).update({imageUrl: imageUrl})
+        })
+        .then(() => {
           commit('createMeetup', {
             ...meetup,
+            imageUrl: imageUrl,
             id: key
           })
         })
         .catch((data) => {
           console.log(data)
+        })
+    },
+    updateMeetup ({commit}, payload) {
+      const updateObj = {}
+      if (payload.title) updateObj.title = payload.title
+      if (payload.description) updateObj.description = payload.description
+      if (payload.date) updateObj.date = payload.date
+      if (payload.place) updateObj.place = payload.place
+      firebase.database().ref('meetups').child(payload.id).update(updateObj)
+        .then(() => {
+          commit('updateMeetup', payload)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    fecthUserData ({commit, getters}) {
+      firebase.database().ref('/users/' + getters.user.id + '/registrations/').once('value')
+        .then(data => {
+          const dataPairs = data.val()
+          let registeredMeetups = []
+          let swappedPairs = {}
+          for (let key in dataPairs) {
+            registeredMeetups.push(dataPairs[key])
+            swappedPairs[dataPairs[key]] = key
+          }
+          const updatedUser = {
+            id: getters.user.id,
+            registeredMeetups: registeredMeetups,
+            fbkeys: swappedPairs
+          }
+          commit('setUser', updatedUser)
+        })
+        .catch(error => {
+          console.log(error)
         })
     },
     signUserUp ({commit}, payload) {
@@ -70,7 +163,8 @@ export const store = new Vuex.Store({
           user => {
             const newUser = {
               id: user.uid,
-              registeredMeetups: []
+              registeredMeetups: [],
+              fbkeys: {}
             }
             commit('setUser', newUser)
           })
@@ -86,7 +180,8 @@ export const store = new Vuex.Store({
           user => {
             const newUser = {
               id: user.uid,
-              registeredMeetups: []
+              registeredMeetups: [],
+              fbkeys: {}
             }
             commit('setUser', newUser)
           })
@@ -111,10 +206,21 @@ export const store = new Vuex.Store({
           )
     },
     autoSignIn ({commit}, payload) {
-      commit('setUser', {id: payload.uid, registeredMeetups: []})
+      commit('setUser', {id: payload.uid, registeredMeetups: [], fbkeys: {}})
     }
   },
   getters: {
+    registeredMeetups (state, getters) {
+      const registeredMeetups = []
+      for (let registeredMeetup in getters.user.registeredMeetups) {
+        for (let meetup in getters.loadedMeetups) {
+          if (getters.user.registeredMeetups[registeredMeetup] === getters.loadedMeetups[meetup].id) {
+            registeredMeetups.push(getters.loadedMeetups[meetup])
+          }
+        }
+      }
+      return registeredMeetups
+    },
     loadedMeetups (state) {
       return state.LoadedMeetups.sort((MeetupA, MeetupB) => {
         return MeetupA.date > MeetupB.date
