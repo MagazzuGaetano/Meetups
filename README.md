@@ -1,6 +1,8 @@
 # Meetups
 
-> A Vue.js project
+> A Vue.js and Firebase project
+
+##https://meetups-107a1.firebaseapp.com
 
 ## Build Setup
 
