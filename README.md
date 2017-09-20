@@ -2,7 +2,7 @@
 
 > A Progressive Web App with Vue.js Vuetify and Firebase for recording meetups
 
-#hosting:https://meetups-107a1.firebaseapp.com
+  #hosting: https://meetups-107a1.firebaseapp.com
 
 ## Build Setup
 
