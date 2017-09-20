@@ -13,7 +13,7 @@
 				<v-layout wrap row>
 					<v-flex xs12>
 						<v-card-text>
-							<v-time-picker v-model="editedTime" style="width:100%" actions format="24hr"></v-time-picker>
+							<v-time-picker v-model="editedTime" style="width:100%" scrollable actions format="24hr"></v-time-picker>
 						</v-card-text>
 					</v-flex>
 				</v-layout>

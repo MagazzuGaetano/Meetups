@@ -9,18 +9,18 @@
                 </v-btn>
                 <template v-if="userIsCreator">
                   <v-spacer></v-spacer>
-                    <editMeetupDialog :meetup="meetup"></editMeetupDialog>
+                  <editMeetupDialog :meetup="meetup" v-if="userIsCreator"></editMeetupDialog>
                 </template>
             </v-layout>
             <v-card-media :src='meetup.imageUrl' height='400px'></v-card-media>
             <v-card-text>
               <v-layout class="info--text" row wrap>
-                <v-flex xs12>
-                  <v-chip>{{ meetup.date | date }}</v-chip>
+                <v-flex xs12><v-chip>{{ meetup.date | date }}</v-chip></v-flex>
+                <v-layout>
                   <editDateDialog :meetup="meetup" v-if="userIsCreator"></editDateDialog>
                   <editTimeDialog :meetup="meetup" v-if="userIsCreator"></editTimeDialog>
-                </v-flex>
-                <v-flex><v-chip style="cursor:pointer">   
+                </v-layout>
+                <v-flex xs12><v-chip style="cursor:pointer">   
                   <router-link 
                     style="font-size:12px;text-decoration:none;color:rgba(0,0,0,.87)"
                     :to="'/googlemaps/' + meetup.id + '/' + meetup.place" >

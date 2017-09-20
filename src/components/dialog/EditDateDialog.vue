@@ -61,3 +61,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.picker--date {
+  color: black;
+}
+</style>

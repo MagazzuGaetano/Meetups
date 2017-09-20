@@ -1,8 +1,8 @@
-# Meetups
+# meetups
 
-> A Vue.js and Firebase project
+> A Progressive Web App with Vue.js Vuetify and Firebase for recording meetups
 
-https://meetups-107a1.firebaseapp.com
+#hosting:https://meetups-107a1.firebaseapp.com
 
 ## Build Setup
 
@@ -18,12 +18,6 @@ npm run build
 
 # build for production and view the bundle analyzer report
 npm run build --report
-
-# run unit tests
-npm run unit
-
-# run all tests
-npm test
 ```
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).

@@ -75,7 +75,7 @@
               persistent
               full-width
               lazy
-              v-model="modal1">
+              v-model="m1">
                 <v-text-field
                 slot="activator"
                 label="Picker in dialog"
@@ -83,7 +83,7 @@
                 readonly
                 v-model="date"
                 ></v-text-field>
-                <v-date-picker v-model="date" scrollable style="background-color:white">
+                <v-date-picker v-model="date" scrollable actions style="background-color:white">
                   <template scope="{ save, cancel }">
                     <v-card-actions>
                       <v-btn flat primary @click.native="cancel()">Cancel</v-btn>
@@ -98,15 +98,15 @@
               persistent
               full-width
               lazy
-              v-model="modal2">
+              v-model="m2">
                 <v-text-field
                 slot="activator"
                 label="Picker in dialog"
-                prepend-icon="event"
+                prepend-icon="access_time"
                 readonly
                 v-model="time"
                 ></v-text-field>
-                <v-time-picker v-model="time" scrollable style="background-color:white">
+                <v-time-picker v-model="time" scrollable actions format="24hr" style="background-color:white">
                   <template scope="{ save, cancel }">
                     <v-card-actions>
                       <v-btn flat primary @click.native="cancel()">Cancel</v-btn>
@@ -138,8 +138,8 @@ import axios from 'axios'
 export default {
   data () {
     return {
-      modal1: false,
-      modal2: false,
+      m1: false,
+      m2: false,
       title: '',
       description: '',
       imageUrl: '',
@@ -235,5 +235,9 @@ a {
 .map {
  height: 250px;
  width: 100%;
+}
+
+.picker--date {
+  color: black;
 }
 </style>

@@ -71,8 +71,9 @@ export default {
 }
 </script>
 
-<style>
-.v-icon{
-  margin-right: 10px;
-}
+<style lang="stylus">
+  @import './stylus/main'
+  .v-icon{
+    margin-right: 10px;
+  }
 </style>
