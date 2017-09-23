@@ -26,10 +26,11 @@
 
     <router-view></router-view>
 
-    <v-footer class="pa-5 red accent-3">
+    <!---<v-footer class="pa-5 red accent-3">
       <v-spacer></v-spacer>
       <div>© {{ new Date().getFullYear() }} Meetups.com</div>
-    </v-footer>
+    </v-footer>-->
+
   </div>
 </template>
 

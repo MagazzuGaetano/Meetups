@@ -1,0 +1,23 @@
+[debug] [2017-09-22T19:37:48.599Z] ----------------------------------------------------------------------
+[debug] [2017-09-22T19:37:48.599Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\giuse\AppData\Roaming\npm\node_modules\firebase-tools\bin\firebase deploy
+[debug] [2017-09-22T19:37:48.599Z] CLI Version:   3.12.0
+[debug] [2017-09-22T19:37:48.599Z] Platform:      win32
+[debug] [2017-09-22T19:37:48.599Z] Node Version:  v6.11.0
+[debug] [2017-09-22T19:37:48.599Z] Time:          Fri Sep 22 2017 21:37:48 GMT+0200 (ora legale Europa occidentale)
+[debug] [2017-09-22T19:37:48.599Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2017-09-22T19:37:48.631Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2017-09-22T19:37:48.631Z] > authorizing via signed-in user
+[debug] [2017-09-22T19:37:48.631Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/meetups-107a1  
+ Fri Sep 22 2017 21:37:48 GMT+0200 (ora legale Europa occidentale)
+[debug] [2017-09-22T19:37:50.322Z] <<< HTTP RESPONSE 200
+[debug] [2017-09-22T19:37:50.322Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/meetups-107a1/tokens  
+ Fri Sep 22 2017 21:37:50 GMT+0200 (ora legale Europa occidentale)
+[debug] [2017-09-22T19:37:51.624Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'meetups-107a1'...
+[info] 
+[info] i  deploying hosting
+[info] i  hosting: preparing ./dist directory for upload...
+[debug] [2017-09-22T19:37:58.428Z] >>> HTTP REQUEST PUT https://deploy.firebase.com/v1/hosting/meetups-107a1/uploads/-Kuf59zMpm-vPlOgCiuB?fileCount=30&message=  
+ Fri Sep 22 2017 21:37:58 GMT+0200 (ora legale Europa occidentale)

@@ -7,9 +7,30 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
   state: {
     LoadedMeetups: [],
-    user: null
+    user: null,
+    loading: false,
+    error: null
   },
   mutations: {
+    setLoading (state, payload) {
+      state.loading = payload
+    },
+    setError (state, payload) {
+      state.error = payload
+    },
+    clearError (state) {
+      state.error = null
+    },
+    cancelMeetup (state, payload) {
+      const meetupId = payload
+      if (!meetupId) return
+      for (var meetup in state.LoadedMeetups) {
+        if (state.LoadedMeetups[meetup].id === meetupId) {
+          state.LoadedMeetups.splice(meetup, 1)
+          break
+        }
+      }
+    },
     registerUserForMeetup (state, payload) {
       const id = payload.id
       if (state.user.registeredMeetups.findIndex(meetup => meetup.id === id) >= 0) return
@@ -41,6 +62,17 @@ export const store = new Vuex.Store({
     }
   },
   actions: {
+    cancelMeetup ({commit}, payload) {
+      const meetupId = payload
+      if (!payload) return
+      firebase.database().ref('meetups').child(meetupId).remove()
+        .then(() => {
+          commit('cancelMeetup', meetupId)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
     registerUserForMeetup ({commit, getters}, payload) {
       const user = getters.user
       firebase.database().ref('/users/' + user.id).child('/registrations/')
@@ -65,7 +97,8 @@ export const store = new Vuex.Store({
           console.log(error)
         })
     },
-    loadMeetups ({commit}) {
+    loadMeetups ({commit}, state) {
+      commit('setLoading', true)
       firebase.database().ref('meetups').once('value')
         .then((data) => {
           const meetups = []
@@ -82,9 +115,11 @@ export const store = new Vuex.Store({
             })
           }
           commit('setLoadedMeetups', meetups)
+          commit('setLoading', false)
         })
         .catch((error) => {
           console.log(error)
+          commit('setLoading', false)
         })
     },
     createMeetup ({commit, getters}, payload) {
@@ -158,9 +193,12 @@ export const store = new Vuex.Store({
         })
     },
     signUserUp ({commit}, payload) {
+      commit('setLoading', true)
       firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
         .then(
           user => {
+            commit('setLoading', false)
+            commit('clearError')
             const newUser = {
               id: user.uid,
               registeredMeetups: [],
@@ -170,14 +208,18 @@ export const store = new Vuex.Store({
           })
         .catch(
           error => {
-            console.log(error)
+            commit('setLoading', false)
+            commit('setError', error)
           }
         )
     },
     signUserIn ({commit}, payload) {
+      commit('setLoading', true)
       firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
        .then(
           user => {
+            commit('setLoading', false)
+            commit('clearError')
             const newUser = {
               id: user.uid,
               registeredMeetups: [],
@@ -187,7 +229,8 @@ export const store = new Vuex.Store({
           })
         .catch(
           error => {
-            console.log(error)
+            commit('setLoading', false)
+            commit('setError', error)
           }
         )
     },
@@ -207,9 +250,52 @@ export const store = new Vuex.Store({
     },
     autoSignIn ({commit}, payload) {
       commit('setUser', {id: payload.uid, registeredMeetups: [], fbkeys: {}})
+    },
+    signUserWithGoogleAuth ({commit}) {
+      var provider = new firebase.auth.GoogleAuthProvider()
+      provider.addScope('profile')
+      provider.addScope('email')
+
+      firebase.auth().signInWithPopup(provider)
+        .then(result => {
+          var token = result.credential.accessToken
+          var user = result.user
+          console.log(user + ':' + token)
+          commit('clearError')
+        })
+        .catch(error => {
+          commit('setError', error)
+          console.log(error.message)
+        })
+    },
+    signUserWithFacebookAuth ({commit}) {
+      var provider = new firebase.auth.FacebookAuthProvider()
+      provider.addScope('profile')
+      provider.addScope('email')
+
+      firebase.auth().signInWithPopup(provider)
+        .then(result => {
+          var token = result.credential.accessToken
+          var user = result.user
+          console.log(user + ':' + token)
+          commit('clearError')
+        })
+        .catch(error => {
+          commit('setError', error)
+          console.log(error.message)
+        })
+    },
+    clearError ({commit}) {
+      commit('clearError')
     }
   },
   getters: {
+    error (state) {
+      return state.error
+    },
+    loading (state) {
+      return state.loading
+    },
     registeredMeetups (state, getters) {
       const registeredMeetups = []
       for (let registeredMeetup in getters.user.registeredMeetups) {

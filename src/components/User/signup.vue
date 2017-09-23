@@ -1,14 +1,19 @@
 <template>
-   <v-contaier>
-      <v-layout>
+   <v-container>
+     <v-layout row v-if="error">
+       <v-flex xs12 sm6 offset-sm3>
+          <appAlert class="mt-5" @dismissed="onDismissed" :text="error.message"></appAlert>
+        </v-flex>
+      </v-layout>
+      <v-layout row>
           <v-flex xs12 sm6 offset-sm3>
-              <v-card class="mt-5 mb-5">
+              <v-card class="mb-5">
                   <v-card-text>
                       <v-container>
                           <form @submit.prevent="onSignup">
                             <v-layout row>
                                 <v-flex xs12>
-                                    <v-text-field 
+                                    <v-text-field
                                     name="email"
                                     label="Mail"
                                     id="email"
@@ -21,7 +26,7 @@
                             </v-layout>
                             <v-layout row>
                                 <v-flex xs12>
-                                    <v-text-field 
+                                    <v-text-field
                                     name="password"
                                     label="Password"
                                     id="password"
@@ -39,7 +44,7 @@
                             </v-layout>
                             <v-layout row>
                                 <v-flex xs12>
-                                    <v-text-field 
+                                    <v-text-field
                                     name="confirmPassword"
                                     label="ConfirmPassword"
                                     id="confirmPassword"
@@ -51,7 +56,12 @@
                             </v-layout>
                             <v-layout row>
                                 <v-flex sx12>
-                                    <center><v-btn success class="mb-4" type="Submit">Sign up</v-btn></center>
+                                    <center><v-btn success class="mb-4" type="Submit" :disabled="loading" :loading="loading">
+                                      Sign up
+                                      <span slot="loader" class="custom-loader">
+                                        <v-icon light>cached</v-icon>
+                                      </span>
+                                    </v-btn></center>
                                 </v-flex>
                             </v-layout>
                              <v-layout row>
@@ -65,7 +75,7 @@
               </v-card>
           </v-flex>
       </v-layout>
-   </v-contaier>
+   </v-container>
 </template>
 
 <script>
@@ -84,6 +94,12 @@ export default {
     },
     user () {
       return this.$strore.getters.user
+    },
+    error () {
+      return this.$store.getters.error
+    },
+    loading () {
+      return this.$store.getters.loading
     }
   },
   watch: {
@@ -96,6 +112,9 @@ export default {
   methods: {
     onSignup () {
       this.$store.dispatch('signUserUp', {email: this.email, password: this.password})
+    },
+    onDismissed () {
+      this.$store.dispatch('clearError')
     }
   }
 }

@@ -4,7 +4,7 @@
       <v-flex xs12 sm6 offset-sm3 class="mt-4 mb-5">
         <h3>Create a new Meetup</h3>
       </v-flex>
-    </v-layout>  
+    </v-layout>
     <v-layout row>
       <v-flex xs12>
         <form @submit.prevent="onCreateMeetup">
@@ -46,9 +46,9 @@
 
           <v-layout row>
             <v-flex xs12 sm6 offset-sm3>
-              <v-text-field 
-              @change.native="lookupCoordinates()" 
-              name="place" 
+              <v-text-field
+              @change.native="lookupCoordinates()"
+              name="place"
               label="Place"
               id="place"
               v-model="place"
@@ -68,7 +68,7 @@
               </gmap-map>
             </v-flex>
           </v-layout>
-          
+
           <v-layout wrap row class="mt-5">
             <v-flex xs6 offset-sm3>
               <v-dialog
@@ -120,8 +120,8 @@
 
           <v-layout row class="mb-4 mt-2">
             <v-flex xs12 sm6 offset-sm3>
-              <center><v-btn 
-              style="background-color:#dcd5d5" 
+              <center><v-btn
+              style="background-color:#dcd5d5"
               :disabled='!formisValid'
               type="submit">Create Meetup</v-btn></center>
             </v-flex>

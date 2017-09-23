@@ -20,8 +20,8 @@
                   <editDateDialog :meetup="meetup" v-if="userIsCreator"></editDateDialog>
                   <editTimeDialog :meetup="meetup" v-if="userIsCreator"></editTimeDialog>
                 </v-layout>
-                <v-flex xs12><v-chip style="cursor:pointer">   
-                  <router-link 
+                <v-flex xs12><v-chip style="cursor:pointer">
+                  <router-link
                     style="font-size:12px;text-decoration:none;color:rgba(0,0,0,.87)"
                     :to="'/googlemaps/' + meetup.id + '/' + meetup.place" >
                     <v-icon>room</v-icon>
@@ -34,6 +34,7 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <registerDialog :meetupId="meetup.id" v-if="userIsAuthenticated && !userIsCreator"></registerDialog>
+              <cancelMeetupDialog :meetupId="meetup.id" v-if="userIsCreator"></cancelMeetupDialog>
             </v-card-actions>
           </v-card>
         </v-flex>

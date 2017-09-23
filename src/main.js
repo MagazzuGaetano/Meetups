@@ -9,9 +9,11 @@ import DateFilter from './filters/date'
 import { store } from './store'
 import * as firebase from 'firebase'
 import editMeetupDialog from './components/dialog/EditMeetupDialog.vue'
+import cancelMeetupDialog from './components/dialog/CancelMeetupDialog.vue'
 import editDateDialog from './components/dialog/EditDateDialog.vue'
 import editTimeDialog from './components/dialog/EditTimeDialog.vue'
 import registerDialog from './components/dialog/RegisterDialog.vue'
+import appAlert from './components/dialog/Alert.vue'
 
 Vue.use(VueGoogleMaps, {
   load: {
@@ -21,9 +23,11 @@ Vue.use(VueGoogleMaps, {
 })
 Vue.filter('date', DateFilter)
 Vue.component('editMeetupDialog', editMeetupDialog)
+Vue.component('cancelMeetupDialog', cancelMeetupDialog)
 Vue.component('editDateDialog', editDateDialog)
 Vue.component('editTimeDialog', editTimeDialog)
 Vue.component('registerDialog', registerDialog)
+Vue.component('appAlert', appAlert)
 
 Vue.config.productionTip = false
 Vue.use(Vuetify)
